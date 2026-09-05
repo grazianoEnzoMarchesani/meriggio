@@ -1,0 +1,838 @@
+/* Ombra - sistema visivo.
+   Tutto ruota attorno a una sola opposizione: l'ambra del sole e il
+   verde-acqua profondo dell'ombra. Ogni colore dell'interfaccia nasce da
+   quella coppia, cosi' che la mappa e i comandi raccontino la stessa cosa. */
+
+:root {
+  --sole: #e8892b;
+  --sole-tenue: #fbead8;
+  --sole-bordo: #f0b27f;
+
+  --ombra: #187a8b;
+  --ombra-cupa: #0e4653;
+  --ombra-tenue: #e0f0f2;
+
+  --inchiostro: #14181f;
+  --inchiostro-tenue: #5b6472;
+  --debole: #8d96a5;
+
+  --pannello: rgba(255, 255, 255, 0.95);
+  --bordo: rgba(20, 24, 31, 0.1);
+  --bordo-forte: rgba(20, 24, 31, 0.18);
+  --fondo: #f6f4ef;
+
+  --ombra-lieve: 0 1px 2px rgba(16, 24, 40, 0.06), 0 4px 12px rgba(16, 24, 40, 0.08);
+  --ombra-media: 0 2px 6px rgba(16, 24, 40, 0.08), 0 12px 32px rgba(16, 24, 40, 0.14);
+
+  --r-s: 8px;
+  --r-m: 12px;
+  --r-l: 18px;
+
+  /* Larghezza tenuta libera nell'angolo in basso a destra per i comandi
+     della mappa (zoom, bussola, posizione) che MapLibre ancora li'. Il
+     cruscotto e la linea del tempo si fermano prima, cosi' non ci finiscono
+     sopra. */
+  --comandi-mappa: 46px;
+
+  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: var(--inchiostro);
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  background: var(--fondo);
+}
+
+button { font: inherit; color: inherit; cursor: pointer; }
+input { font: inherit; color: inherit; }
+
+:focus-visible {
+  outline: 2px solid var(--ombra);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ---------------------------------------------------------------- mappa */
+
+.mappa { position: absolute; inset: 0; }
+.maplibregl-ctrl-attrib { font-size: 10px; }
+.maplibregl-ctrl-bottom-right { margin-bottom: 4px; }
+
+/* Contrassegni di partenza e arrivo */
+.segna {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  font-size: 12px; font-weight: 650;
+  color: #fff;
+  border: 2.5px solid #fff;
+  box-shadow: var(--ombra-lieve);
+  cursor: grab;
+}
+.segna--partenza { background: var(--ombra-cupa); }
+.segna--arrivo { background: var(--sole); }
+
+/* ------------------------------------------------------------- pannello */
+
+.guscio {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: grid;
+  grid-template-columns: 384px 1fr;
+  grid-template-rows: 1fr auto;
+  gap: 16px;
+  padding: 16px;
+}
+
+.pannello {
+  pointer-events: auto;
+  grid-row: 1 / span 2;
+  background: var(--pannello);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--bordo);
+  border-radius: var(--r-l);
+  box-shadow: var(--ombra-media);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-height: 100%;
+}
+
+.pannello__testa {
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid var(--bordo);
+}
+
+.marchio {
+  display: flex; align-items: baseline; gap: 9px;
+}
+.marchio h1 {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 640;
+  letter-spacing: -0.02em;
+}
+.marchio span {
+  font-size: 12px;
+  color: var(--debole);
+}
+.sottotitolo {
+  margin: 5px 0 0;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--inchiostro-tenue);
+}
+
+.pannello__corpo {
+  padding: 16px 20px 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.gruppo { display: flex; flex-direction: column; gap: 8px; }
+
+.gruppo__testa {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+}
+
+.etichetta {
+  font-size: 11px;
+  font-weight: 620;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--debole);
+}
+
+/* ------------------------------------------------------- capi percorso */
+
+.capi { display: flex; flex-direction: column; gap: 7px; position: relative; }
+
+.capo {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%;
+  padding: 9px 11px;
+  background: #fff;
+  border: 1px solid var(--bordo-forte);
+  border-radius: var(--r-m);
+  text-align: left;
+  transition: border-color 0.14s, box-shadow 0.14s;
+}
+.capo:hover { border-color: var(--debole); }
+.capo--attivo {
+  border-color: var(--ombra);
+  box-shadow: 0 0 0 3px var(--ombra-tenue);
+}
+
+.capo__punto {
+  width: 11px; height: 11px; border-radius: 50%; flex: none;
+}
+.capo__punto--partenza { background: var(--ombra-cupa); }
+.capo__punto--arrivo { background: var(--sole); }
+
+.capo__testo { flex: 1; min-width: 0; }
+.capo__titolo {
+  font-size: 13.5px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.capo__titolo--vuoto { color: var(--debole); }
+
+.capo__x {
+  border: none; background: none; padding: 3px;
+  color: var(--debole); line-height: 0; border-radius: 5px;
+}
+.capo__x:hover { background: var(--bordo); color: var(--inchiostro); }
+
+.scambia {
+  position: absolute; right: 12px; top: 50%;
+  transform: translateY(-50%);
+  width: 27px; height: 27px;
+  display: grid; place-items: center;
+  background: #fff;
+  border: 1px solid var(--bordo-forte);
+  border-radius: 50%;
+  color: var(--inchiostro-tenue);
+  box-shadow: var(--ombra-lieve);
+  z-index: 2;
+}
+.scambia:hover { color: var(--ombra); border-color: var(--ombra); }
+
+/* ---------------------------------------------------------- suggerimenti */
+
+.cerca { position: relative; }
+.cerca input {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid var(--bordo-forte);
+  border-radius: var(--r-m);
+  background: #fff;
+}
+.cerca input::placeholder { color: var(--debole); }
+
+.suggerimenti {
+  position: absolute; top: calc(100% + 5px); left: 0; right: 0;
+  background: #fff;
+  border: 1px solid var(--bordo-forte);
+  border-radius: var(--r-m);
+  box-shadow: var(--ombra-media);
+  z-index: 30;
+  max-height: 240px; overflow-y: auto;
+  padding: 4px;
+}
+.suggerimento {
+  display: block; width: 100%;
+  padding: 8px 10px;
+  border: none; background: none; text-align: left;
+  border-radius: var(--r-s);
+}
+.suggerimento:hover { background: var(--ombra-tenue); }
+.suggerimento strong { display: block; font-size: 13.5px; font-weight: 560; }
+.suggerimento small {
+  display: block; font-size: 11.5px; color: var(--debole);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.suggerimento--fuori strong { color: var(--debole); }
+
+/* La posizione attuale sta in cima e si distingue: e' la scelta piu' probabile
+   di chi usa l'applicazione per strada. */
+.suggerimento--posizione strong { color: var(--sole); }
+.suggerimento--posizione:disabled { opacity: 0.6; }
+.suggerimento--posizione + .suggerimento {
+  border-top: 1px solid var(--bordo);
+  margin-top: 4px; padding-top: 10px;
+}
+
+/* -------------------------------------------------------------- segmenti */
+
+.segmentato {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 3px;
+  padding: 3px;
+  background: rgba(20, 24, 31, 0.05);
+  border-radius: var(--r-m);
+}
+.segmentato button {
+  border: none; background: none;
+  padding: 7px 4px;
+  border-radius: var(--r-s);
+  font-size: 12.5px; font-weight: 540;
+  color: var(--inchiostro-tenue);
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  transition: background 0.14s, color 0.14s;
+}
+.segmentato button:hover { color: var(--inchiostro); }
+.segmentato button[aria-pressed='true'] {
+  background: #fff;
+  color: var(--inchiostro);
+  box-shadow: var(--ombra-lieve);
+}
+
+/* --------------------------------------------------------------- cursore */
+
+.cursore { display: flex; flex-direction: column; gap: 9px; }
+
+.cursore__estremi {
+  display: flex; justify-content: space-between;
+  font-size: 11.5px; color: var(--debole);
+}
+
+/* Il valore corrente: sta in alto, staccato dagli estremi, cosi' non lo si
+   legge come una terza tacca della scala. */
+.cursore__valore {
+  font-size: 11.5px; font-weight: 620;
+  color: var(--ombra-cupa);
+  background: var(--ombra-tenue);
+  padding: 2px 8px;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+
+.cursore__esito {
+  margin: 1px 0 0;
+  font-size: 11.5px; line-height: 1.45;
+  color: var(--ombra-cupa);
+  border-left: 2px solid var(--ombra);
+  padding-left: 9px;
+}
+/* Quando il cursore e' saturo o al minimo il tono passa all'ambra: non e' un
+   risultato, e' un limite. */
+.cursore__esito--fermo {
+  color: #8a4b0d;
+  border-left-color: var(--sole);
+}
+
+input[type='range'] {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 5px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--sole) 0%, var(--ombra) 100%);
+  outline: none;
+}
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 19px; height: 19px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2.5px solid var(--ombra);
+  box-shadow: var(--ombra-lieve);
+  cursor: grab;
+}
+input[type='range']::-webkit-slider-thumb:active { cursor: grabbing; }
+input[type='range']::-moz-range-thumb {
+  width: 19px; height: 19px; border-radius: 50%;
+  background: #fff; border: 2.5px solid var(--ombra);
+  box-shadow: var(--ombra-lieve); cursor: grab;
+}
+
+/* ---------------------------------------------------------------- schede */
+
+.schede { display: flex; flex-direction: column; gap: 9px; }
+
+.scheda {
+  width: 100%;
+  padding: 13px 14px;
+  background: #fff;
+  border: 1.5px solid var(--bordo);
+  border-radius: var(--r-m);
+  text-align: left;
+  display: flex; flex-direction: column; gap: 9px;
+  transition: border-color 0.14s, box-shadow 0.14s;
+}
+.scheda:hover { border-color: var(--bordo-forte); }
+.scheda--scelta { border-color: var(--ombra); box-shadow: 0 0 0 3px var(--ombra-tenue); }
+.scheda--rapido.scheda--scelta { border-color: var(--sole); box-shadow: 0 0 0 3px var(--sole-tenue); }
+
+.scheda__testa { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.scheda__nome { font-size: 13.5px; font-weight: 620; display: flex; align-items: center; gap: 7px; }
+
+/* Marca la scheda di paragone come tale, perche' non venga letta come la
+   seconda di una classifica. */
+.scheda__ruolo {
+  font-size: 10px; font-weight: 620;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--debole);
+  border: 1px solid var(--bordo-forte);
+  border-radius: 99px;
+  padding: 1px 6px;
+}
+
+.pastiglia {
+  font-size: 10.5px; font-weight: 620;
+  padding: 2.5px 7px; border-radius: 99px;
+  letter-spacing: 0.02em;
+}
+.pastiglia--ombra { background: var(--ombra-tenue); color: var(--ombra-cupa); }
+.pastiglia--sole { background: var(--sole-tenue); color: #a35a12; }
+
+.scheda__numeri { display: flex; align-items: baseline; gap: 14px; }
+.numero { display: flex; flex-direction: column; gap: 1px; }
+.numero b { font-size: 19px; font-weight: 630; letter-spacing: -0.02em; }
+.numero span { font-size: 11px; color: var(--debole); }
+
+/* Barra che mostra la quota di percorso in ombra */
+.barra {
+  height: 6px; border-radius: 99px; overflow: hidden;
+  background: var(--sole); display: flex;
+}
+.barra__ombra { background: var(--ombra); height: 100%; }
+
+.scheda__nota { font-size: 11.5px; color: var(--inchiostro-tenue); line-height: 1.4; }
+
+/* ------------------------------------------------------------- messaggi */
+
+.avviso {
+  padding: 11px 13px;
+  border-radius: var(--r-m);
+  font-size: 12.5px; line-height: 1.45;
+  background: var(--sole-tenue);
+  border: 1px solid var(--sole-bordo);
+  color: #8a4b0d;
+}
+.istruzioni {
+  font-size: 12.5px; line-height: 1.5;
+  color: var(--inchiostro-tenue);
+  padding: 13px;
+  background: var(--ombra-tenue);
+  border-radius: var(--r-m);
+}
+.istruzioni b { color: var(--ombra-cupa); font-weight: 620; }
+
+.caricamento {
+  display: flex; align-items: center; gap: 9px;
+  font-size: 12.5px; color: var(--inchiostro-tenue);
+}
+.rotella {
+  width: 14px; height: 14px; flex: none;
+  border: 2px solid var(--bordo-forte);
+  border-top-color: var(--ombra);
+  border-radius: 50%;
+  animation: gira 0.7s linear infinite;
+}
+@keyframes gira { to { transform: rotate(360deg); } }
+
+/* ------------------------------------------------------------ cruscotto */
+
+/* Contenitore dei widget in alto a destra: il quadrante solare e, sotto,
+   meteo/traffico dell'istante scelto (`Condizioni`). Il posizionamento sulla
+   griglia sta qui, non sulle singole card, cosi' le due si impilano restando
+   ancorate allo stesso angolo. */
+.cruscotto {
+  pointer-events: none;
+  grid-column: 2;
+  justify-self: end; align-self: start;
+  margin-right: var(--comandi-mappa);
+  /* `stretch`, non `flex-end`: la card meteo/traffico si allarga fino alla
+     larghezza del quadrante solare sopra, cosi' le due si leggono come una
+     coppia e non come due riquadri di misura diversa. */
+  display: flex; flex-direction: column; align-items: stretch; gap: 10px;
+}
+
+.quadro, .condizioni {
+  pointer-events: auto;
+  background: var(--pannello);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--bordo);
+  border-radius: var(--r-l);
+  box-shadow: var(--ombra-media);
+}
+
+.quadro {
+  padding: 13px;
+  display: flex; align-items: center; gap: 13px;
+}
+
+.bussola { position: relative; width: 68px; height: 68px; flex: none; }
+
+.quadro__dati { display: flex; flex-direction: column; gap: 2px; }
+.quadro__ora { font-size: 17px; font-weight: 640; letter-spacing: -0.01em; }
+.quadro__riga { font-size: 11.5px; color: var(--inchiostro-tenue); }
+.quadro__riga b { font-weight: 600; color: var(--inchiostro); }
+
+/* ---------------------------------------------------------- condizioni */
+
+.condizioni {
+  padding: 13px;
+  display: flex; flex-direction: column; gap: 3px;
+  min-width: 160px;
+}
+.condizioni__riga { font-size: 13px; color: var(--inchiostro); }
+.condizioni__riga b { font-weight: 640; }
+.condizioni__dettaglio { font-size: 11px; color: var(--debole); }
+
+/* Sottolineatura tratteggiata: l'unico modo per far sapere che si puo'
+   passare il mouse qui per vedere il traffico su tutta la rete. */
+.condizioni__traffico {
+  cursor: help;
+  width: fit-content;
+  border-bottom: 1px dashed var(--bordo-forte);
+}
+
+/* ------------------------------------------------------------- cronologia */
+
+.tempo {
+  pointer-events: auto;
+  grid-column: 2;
+  align-self: end;
+  margin-right: var(--comandi-mappa);
+  background: var(--pannello);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--bordo);
+  border-radius: var(--r-l);
+  box-shadow: var(--ombra-media);
+  padding: 13px 18px 15px;
+  display: flex; flex-direction: column; gap: 9px;
+}
+
+.tempo__testa {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.tempo__ora {
+  font-size: 15px; font-weight: 620;
+  font-variant-numeric: tabular-nums;
+  display: flex; align-items: baseline; gap: 8px;
+}
+.tempo__ora small { font-size: 11.5px; font-weight: 450; color: var(--debole); }
+
+.tempo__comandi { display: flex; align-items: center; gap: 7px; }
+
+.bottone {
+  padding: 6px 11px;
+  border: 1px solid var(--bordo-forte);
+  background: #fff;
+  border-radius: var(--r-s);
+  font-size: 12px; font-weight: 540;
+  display: inline-flex; align-items: center; gap: 6px;
+  transition: border-color 0.14s, background 0.14s;
+}
+.bottone:hover { border-color: var(--debole); }
+.bottone--icona { padding: 6px; aspect-ratio: 1; justify-content: center; color: var(--debole); }
+.bottone--icona.bottone--acceso { color: #fff; }
+.bottone--acceso {
+  background: var(--ombra-cupa); border-color: var(--ombra-cupa); color: #fff;
+}
+.bottone--acceso:hover { border-color: var(--ombra-cupa); }
+
+.data { border: 1px solid var(--bordo-forte); border-radius: var(--r-s); padding: 5px 8px; font-size: 12px; }
+
+/* Fascia oraria: notte, alba, giorno, tramonto */
+.tempo__barra { position: relative; }
+.tempo__fascia {
+  position: absolute; inset: 0 0 auto; top: 50%;
+  transform: translateY(-50%);
+  height: 5px; border-radius: 99px;
+  pointer-events: none;
+}
+.tempo input[type='range'] { position: relative; background: transparent; }
+.tempo input[type='range']::-webkit-slider-thumb { border-color: var(--sole); }
+.tempo input[type='range']::-moz-range-thumb { border-color: var(--sole); }
+
+/* ================================================================ mobile
+
+   Sotto i 900px `App` cambia impianto: niente `.guscio`, ma la mappa a tutto
+   schermo con due elementi sovrapposti -- la card del tempo in alto
+   (`.m-top`, sempre visibile) e il pannello dentro un foglio trascinabile dal
+   basso (`.m-foglio`, vedi `MobileSheet`). Qui sotto: quel guscio, e ovunque
+   l'ingrandimento dei bersagli per il dito. */
+
+@media (max-width: 900px) {
+  /* ------------------------------------------------ card del tempo, in alto */
+
+  .m-top {
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: 5;
+    pointer-events: none;
+    padding: calc(7px + env(safe-area-inset-top)) 8px 0;
+  }
+
+  .m-top__carta {
+    pointer-events: auto;
+    position: relative;
+    background: var(--pannello);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--bordo);
+    border-radius: var(--r-l);
+    box-shadow: var(--ombra-media);
+    /* Compressa: bussola e slider affiancati, ~78px. */
+    padding: 13px 12px 10px;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    cursor: pointer;
+  }
+  .m-top__carta--espanso {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 16px 13px 14px;
+  }
+
+  /* Quadrante solare e linea del tempo perdono il proprio guscio: dentro
+     `.m-top__carta` sono le righe di un'unica card. */
+  .m-top .quadro,
+  .m-top .tempo {
+    pointer-events: auto;
+    background: none;
+    backdrop-filter: none;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0;
+    margin: 0;
+    grid-column: auto;
+  }
+
+  .m-top .quadro { flex: none; gap: 11px; }
+  .m-top__carta--espanso .quadro { align-self: flex-start; }
+  .m-top .bussola { width: 42px; height: 42px; }
+  .m-top .quadro__ora { display: none; }
+  .m-top .quadro__riga { font-size: 12px; }
+  /* Da compressa il disco della bussola basta a dire dov'e' il sole. */
+  .m-top__carta:not(.m-top__carta--espanso) .quadro__dati { display: none; }
+
+  .m-top .tempo { flex: 1; min-width: 0; gap: 6px; }
+  .m-top .tempo__testa { align-items: center; gap: 8px; }
+  .m-top .tempo__ora { flex: 1; min-width: 0; font-size: 16px; align-items: baseline; gap: 6px; }
+  .m-top .tempo__ora small { font-size: 10.5px; white-space: nowrap; }
+  .m-top__carta:not(.m-top__carta--espanso) .tempo__ora small { display: none; }
+  .m-top .tempo__comandi { flex: none; gap: 7px; }
+  .m-top .bottone { font-size: 12.5px; padding: 8px 12px; min-height: 36px; }
+  .m-top .bottone--icona { padding: 8px; min-width: 36px; }
+  /* 16px: sotto questa soglia iOS zooma la pagina al fuoco del campo. */
+  .m-top .data { font-size: 16px; padding: 6px 8px; }
+  .m-top__carta:not(.m-top__carta--espanso) .data { display: none; }
+
+  /* Espansa: ora a tutta riga, data e "Adesso" sotto. */
+  .m-top__carta--espanso .tempo__testa { flex-wrap: wrap; gap: 8px 10px; }
+  .m-top__carta--espanso .tempo__ora { flex: 1 0 100%; }
+  .m-top__carta--espanso .tempo__comandi { flex: 1 0 100%; }
+  .m-top__carta--espanso .data { flex: 1; }
+
+  .m-top .tempo__barra { padding: 7px 0; }
+  .m-top input[type='range']::-webkit-slider-thumb { width: 24px; height: 24px; }
+  .m-top input[type='range']::-moz-range-thumb { width: 24px; height: 24px; }
+
+  /* Segnalino apri/chiudi: al centro in alto, puramente visivo -- il tocco
+     lo gestisce la card. */
+  .m-top__freccia {
+    position: absolute;
+    left: 50%;
+    top: 2px;
+    transform: translateX(-50%);
+    color: var(--debole);
+    pointer-events: none;
+  }
+  .m-top__carta--espanso .m-top__freccia { transform: translateX(-50%) rotate(180deg); top: 4px; }
+
+  /* --------------------------------------------- foglio trascinabile, in basso */
+
+  .m-foglio {
+    position: absolute;
+    inset: auto 0 0;
+    z-index: 6;
+    height: 90vh;
+    height: 90dvh;
+    display: flex;
+    flex-direction: column;
+    background: var(--pannello);
+    backdrop-filter: blur(18px);
+    border-radius: 22px 22px 0 0;
+    box-shadow: 0 -6px 28px rgba(16, 24, 40, 0.18);
+    transition: transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
+    will-change: transform;
+  }
+  .m-foglio--attivo { transition: none; }
+
+  /* Presa ampia e facile da agganciare col pollice. */
+  .m-foglio__presa {
+    flex: none;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    cursor: grab;
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .m-foglio__presa:active { cursor: grabbing; }
+  /* Durante il trascinamento niente selezione di testo nel foglio. */
+  .m-foglio--attivo, .m-foglio--attivo * { user-select: none; -webkit-user-select: none; }
+  .m-foglio__barra {
+    width: 44px;
+    height: 5px;
+    border-radius: 99px;
+    background: var(--bordo-forte);
+    transition: background 0.15s, width 0.15s;
+  }
+  .m-foglio--attivo .m-foglio__barra { background: var(--debole); width: 52px; }
+
+  .m-foglio__corpo {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Il pannello riempie il foglio: via il suo guscio, che ora e' il foglio. */
+  .m-foglio .pannello {
+    position: static;
+    grid-row: auto;
+    height: auto;
+    max-height: none;
+    background: none;
+    backdrop-filter: none;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: visible;
+  }
+  /* Nel foglio l'intestazione del pannello (nome dell'area + claim) non serve:
+     il riepilogo in cima e la mappa dicono gia' dove si sta. */
+  .m-foglio .pannello__testa { display: none; }
+  .m-foglio .pannello__corpo {
+    padding: 15px 16px calc(26px + env(safe-area-inset-bottom));
+    overflow: visible;
+    gap: 20px;
+  }
+
+  /* ------------------------------- blocco fisso in testa: risultato + meteo */
+
+  /* Riepilogo del percorso e meteo restano agganciati in cima al foglio in
+     ogni scatto. Da chiuso sono, con la presa, l'unica cosa in vista: la
+     risposta e il perche' (31 gradi), interi e mai tagliati. */
+  .m-foglio__fisso { flex: none; }
+
+  .m-foglio__meteo { padding: 11px 16px 13px; }
+  .m-foglio__meteo:empty { display: none; }
+  .m-foglio__meteo .condizioni {
+    background: none;
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    min-width: 0;
+  }
+
+  .m-riepilogo {
+    flex: none;
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid var(--bordo);
+    background: none;
+    text-align: left;
+    padding: 2px 18px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .m-riepilogo__esito { display: flex; flex-direction: column; gap: 3px; }
+  .m-riepilogo__esito--attesa { opacity: 0.55; transition: opacity 0.15s; }
+  .m-riepilogo__numeri {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .m-riepilogo__numeri b { font-size: 20px; font-weight: 640; letter-spacing: -0.02em; }
+  .m-riepilogo__numeri > span { font-size: 14px; color: var(--inchiostro-tenue); }
+  .m-riepilogo__numeri .pastiglia { align-self: center; }
+  .m-riepilogo__arrivo { font-size: 12px; color: var(--debole); }
+  .m-riepilogo__attesa {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--inchiostro-tenue);
+    padding: 3px 0 1px;
+  }
+  .m-riepilogo__attesa--ambra { color: #8a4b0d; }
+
+  /* ------------------------------------------- "Altre opzioni" richiudibile */
+
+  .altre { display: flex; flex-direction: column; }
+  .altre > summary {
+    cursor: pointer;
+    list-style: none;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11px;
+    font-weight: 620;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--debole);
+  }
+  .altre > summary::-webkit-details-marker { display: none; }
+  .altre > summary::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform 0.15s;
+  }
+  .altre[open] > summary::after { transform: rotate(-135deg); }
+  .altre__corpo {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-top: 12px;
+  }
+
+  /* ------------------------------------------------- bersagli piu' generosi */
+
+  .capo { padding: 12px; min-height: 52px; }
+  .capo__titolo { font-size: 15px; }
+  .capo__x { padding: 9px; }
+  .scambia { width: 34px; height: 34px; right: 10px; }
+
+  .cerca input { padding: 13px 12px; }
+  .suggerimento { padding: 12px 10px; min-height: 48px; }
+  .suggerimento strong { font-size: 15px; }
+
+  .segmentato { gap: 4px; padding: 4px; }
+  .segmentato button { padding: 12px 4px; min-height: 46px; font-size: 13.5px; }
+
+  .scheda { padding: 15px; }
+
+  .data { font-size: 16px; }
+
+  /* Cursori del pannello: pomello piu' grosso e traccia un filo piu' alta.
+     Niente padding + background-clip: rompevano il rendering della traccia
+     su WebKit e la barra spariva. */
+  .m-foglio .cursore input[type='range'] { height: 7px; }
+  .m-foglio .cursore input[type='range']::-webkit-slider-thumb { width: 28px; height: 28px; }
+  .m-foglio .cursore input[type='range']::-moz-range-thumb { width: 28px; height: 28px; }
+
+  /* Contrassegni A/B piu' grandi: si afferrano col dito per spostarli. */
+  .segna { width: 34px; height: 34px; font-size: 13px; }
+
+  /* "La mia posizione" e attribuzione: sollevate sopra il foglio chiuso,
+     a portata di pollice mentre si scelgono i punti. Aprendo il foglio le
+     copre, ma li' non si sta piu' manovrando la mappa. */
+  .maplibregl-ctrl-bottom-right {
+    margin-bottom: calc(var(--m-foglio-chiuso, 200px) + 12px + env(safe-area-inset-bottom));
+  }
+  .maplibregl-ctrl-bottom-right .maplibregl-ctrl-geolocate button { width: 38px; height: 38px; }
+
+  /* MapLibre apre l'attribuzione per intero al caricamento e la richiude solo
+     su `mouseleave`, che col dito non arriva mai: la si tiene chiusa (resta la
+     "i"), aperta solo quando la si tocca. */
+  .maplibregl-ctrl-attrib.maplibregl-compact-show .maplibregl-ctrl-attrib-inner { display: none; }
+  .maplibregl-ctrl-attrib.maplibregl-compact-show:focus-within .maplibregl-ctrl-attrib-inner { display: block; }
+  .maplibregl-ctrl-attrib.maplibregl-compact-show { padding: 2px 24px 2px 0; }
+}

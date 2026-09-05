@@ -1,0 +1,22 @@
+id,strada,da,a,gruppo,data_rilievo,bici_14h,moto_14h,totale_auto_14h,autovetture_14h,comm_leggeri_14h,pesanti_isolati_14h,autobus_14h,pesanti_combinati_14h,picco_mattino_veic_h,picco_mezzodi_veic_h,picco_pomeriggio_veic_h
+01A,Viale Treviri,Largo Porta Romana,Piazza Cecco d'Ascoli,cordone,2025-03-21,154,128,4004,3657,251,63,33,0,436,274,339
+01B,Viale Treviri,Piazza Cecco d'Ascoli,Largo Porta Romana,cordone,2025-03-21,147,100,3587,3270,250,41,26,0,320,277,351
+02A,Ponte Romano di Solestà,Via Berardo Tucci,Via Elisabetta Trebbiani,cordone,2025-03-21,185,25,16,15,1,0,0,0,1,0,4
+02B,Ponte Romano di Solestà,Via Elisabetta Trebbiani,Via Berardo Tucci,cordone,2025-03-21,227,144,2431,2236,165,30,0,0,206,237,243
+03A,Via Ponte Nuovo,Via Piave,Lungotronto Emidio Bartolomei,cordone,2025-03-21,240,167,2244,1921,182,31,110,0,285,189,159
+03B,Via Ponte Nuovo,Lungotronto Emidio Bartolomei,Via Piave,cordone,2025-03-21,279,267,3988,3557,270,63,98,0,401,333,303
+04A,Via Porta Tufilla,Ponte di Sant'Antonio,Lungotronto Emidio Bartolomei,pedonale,2025-03-21,4,65,3107,2973,129,5,0,0,265,282,311
+04B,Ponte di Sant'Antonio,Via Porta Tufilla,Via del Ponte Vecchio,pedonale,2025-03-21,2,19,1438,1381,53,4,0,0,77,137,137
+05A,Ponte Maggiore,Via Genova,Via delle Terme,cordone,2025-03-21,90,454,8507,7703,418,79,307,0,649,739,775
+05B,Ponte Maggiore,Via delle Terme,Via Genova,cordone,2025-03-21,24,258,4040,3445,192,57,346,0,385,328,333
+06B,Via Porta Torricella,Lungocastello Sisto V,Via Adriatico,pedonale,2025-03-21,6,33,1073,1011,56,6,0,0,105,87,92
+07A,Ponte Cartaro,Via Mediterraneo,Lungocastello Sisto V,cordone,2025-03-21,30,88,5309,4853,370,65,21,0,537,400,450
+07B,Ponte Cartaro,Lungocastello Sisto V,Via Mediterraneo,cordone,2025-03-21,19,26,3358,3127,205,25,1,0,403,269,303
+08A,Via della Rimembranza,Via della Fortezza Pia,Via Emidio Pacifici Mazzoni,pedonale,2025-03-21,5,11,452,410,32,10,0,0,28,20,62
+08B,Via della Rimembranza,Via Emidio Pacifici Mazzoni,Via della Fortezza Pia,pedonale,2025-03-21,2,13,409,362,34,10,3,0,28,37,27
+21A,Via Capitano Angelo Zanettelli,Via dei Trattati,Casamurana,periferica,2025-03-20,7,0,41,36,4,1,0,0,1,2,6
+21B,Via Capitano Angelo Zanettelli,Casamurana,Via dei Trattati,periferica,2025-03-20,6,0,50,45,4,1,0,0,1,2,1
+22A,SP119,SS4,Frazione Arli,periferica,2025-03-20,0,1,113,89,13,2,9,0,2,7,12
+22B,SP119,Frazione Arli,SS4,periferica,2025-03-20,1,1,116,90,16,1,9,0,2,9,13
+23A,Via Caprignano,Fraz. Monterocco,Cimitero Comunale Ascoli Piceno,periferica,2025-03-20,14,3,176,159,16,1,0,0,22,12,11
+23B,Via Caprignano,Cimitero Comunale Ascoli Piceno,Fraz. Monterocco,periferica,2025-03-20,17,2,176,156,19,1,0,0,10,19,26

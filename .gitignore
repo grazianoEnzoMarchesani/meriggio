@@ -1,0 +1,24 @@
+# dati scaricati e derivati: si rigenerano con `ombra.cli prepara`
+backend/data/
+backend/.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+
+web/node_modules/
+web/dist/
+web/*.local
+npm-debug.log*
+
+# editor e sistema operativo
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+# variabili d'ambiente locali, se mai servissero
+.env
+.env.local
+*.env

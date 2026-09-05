@@ -1,0 +1,15 @@
+# Serve solo a preparare le aree, sul portatile: in produzione non gira nulla
+# di tutto questo. Sono cadute fastapi e uvicorn insieme al server; pillow e'
+# rientrata in fase 3 per scrivere le tessere PNG del rilievo (raster-dem).
+aiohttp==3.14.3
+fsspec==2026.7.0
+geopandas==1.1.4
+networkx==3.6.1  # centralita' della rete stradale, traffico.py
+numpy==2.5.1
+pillow==12.3.0
+pyarrow==25.0.0
+pyproj==3.7.2
+rasterio==1.5.0
+requests==2.34.2
+scipy==1.18.0
+shapely==2.1.2

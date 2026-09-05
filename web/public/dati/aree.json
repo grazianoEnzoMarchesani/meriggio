@@ -1,0 +1,22 @@
+[
+ {
+  "slug": "ascoli-piceno",
+  "name": "Ascoli Piceno",
+  "bounds": [
+   13.554672169512298,
+   42.83924418053973,
+   13.596335430487702,
+   42.86999281946027
+  ],
+  "center": [
+   13.5755038,
+   42.8546185
+  ],
+  "size_km": [
+   3.462,
+   3.472
+  ],
+  "timezone": "Europe/Rome",
+  "url": "ascoli-piceno/manifest.json"
+ }
+]

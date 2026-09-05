@@ -1,0 +1,66 @@
+# Pubblicazione su GitHub Pages.
+#
+# Non c'e' nessun servizio da avviare: il sito e' fatto di file, e questo
+# flusso li assembla e li mette online. I dati delle aree (tasselli, grafo,
+# edifici) stanno gia' nel repository dentro `web/public/dati`, prodotti sul
+# portatile da `python -m ombra.cli prepara`: qui non si scarica ne' si
+# elabora nulla di geografico.
+#
+# Presuppone che questa cartella `ombra` sia la radice del repository. Se
+# stesse piu' in basso, vanno spostati i `working-directory` e i percorsi.
+
+name: Pubblica su Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Una pubblicazione alla volta, senza interrompere quella in corso.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  costruisci:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - run: npm ci
+
+      # I test di parita' col Python girano prima della pubblicazione: se il
+      # porting smettesse di dare gli stessi numeri, il sito non si aggiorna.
+      - run: npm test
+
+      - name: Costruisci
+        # Su Pages il sito sta in una sottocartella col nome del repository.
+        run: BASE="/${GITHUB_REPOSITORY#*/}/" npm run build
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/dist
+
+  pubblica:
+    needs: costruisci
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.pubblicazione.outputs.page_url }}
+    steps:
+      - id: pubblicazione
+        uses: actions/deploy-pages@v4
