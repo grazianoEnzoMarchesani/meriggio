@@ -10,13 +10,17 @@ abstract: >-
 authors:
   - family-names: Marchesani
     given-names: Graziano Enzo
-    affiliation: "University of Camerino"
+    orcid: "https://orcid.org/0000-0002-4723-5099"
+    affiliation: "Università di Camerino"
   - family-names: Cocci Grifoni
     given-names: Roberta
-    affiliation: "University of Camerino"
+    orcid: "https://orcid.org/0000-0002-7092-6293"
+    affiliation: "Università di Camerino"
   - family-names: Riera
     given-names: Dajla
-    affiliation: "University of Camerino"
+    orcid: "https://orcid.org/0000-0003-4349-1471"
+    affiliation: "Università di Camerino"
 repository-code: "https://github.com/grazianoEnzoMarchesani/meriggio"
+doi: 10.5281/zenodo.23325436
 license: GPL-3.0-or-later
 url: "https://grazianoenzomarchesani.github.io/meriggio/"

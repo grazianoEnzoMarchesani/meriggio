@@ -1,5 +1,7 @@
 # Meriggio
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23325436.svg)](https://doi.org/10.5281/zenodo.23325436)
+
 Un navigatore che non cerca il percorso più breve né il più veloce, ma **il più
 fresco**: quello che passa più tempo all'ombra. Le ombre non sono stimate, sono
 calcolate dalla geometria reale del terreno, degli edifici e degli alberi, e
