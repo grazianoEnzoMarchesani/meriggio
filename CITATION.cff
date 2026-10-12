@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "Se usi questo software, citalo così."
+title: "Meriggio"
+type: software
+abstract: >-
+  Un navigatore pedonale che non cerca il percorso più breve né il più veloce,
+  ma il più fresco: quello che passa più tempo all'ombra. Le ombre sono
+  calcolate dalla geometria reale di terreno, edifici e alberi, tenendo conto
+  del movimento del sole lungo il tragitto. Il calcolo avviene nel browser.
+authors:
+  - family-names: Marchesani
+    given-names: Graziano Enzo
+  - family-names: Cocci Grifoni
+    given-names: Roberta
+  - family-names: Riera
+    given-names: Dajla
+repository-code: "https://github.com/grazianoEnzoMarchesani/meriggio"
+url: "https://grazianoenzomarchesani.github.io/meriggio/"

@@ -1,4 +1,4 @@
-# Ombra
+# Meriggio
 
 Un navigatore che non cerca il percorso più breve né il più veloce, ma **il più
 fresco**: quello che passa più tempo all'ombra. Le ombre non sono stimate, sono
