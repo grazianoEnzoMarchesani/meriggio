@@ -10,7 +10,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 
-import { clearSkyIrradiance, solarLoad, solarPosition, sunTimes } from '../src/ombra/solar.ts'
+import { clearSkyIrradiance, solarLoad, solarPosition, sunTimes } from '../src/meriggio/solar.ts'
 import { carica } from './riferimenti.ts'
 
 interface Campione {

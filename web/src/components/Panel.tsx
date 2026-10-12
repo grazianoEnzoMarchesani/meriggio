@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { apriInformativa } from '../lib/consenso'
 import { distanza, durata, ora } from '../lib/format'
 import { type Modalita, type Percorso, type RisultatoPercorso } from '../lib/motore'
 import { useIsMobile } from '../lib/useIsMobile'
@@ -264,6 +265,10 @@ export function Panel() {
             </p>
           </div>
         )}
+
+        <button className="link-privacy" onClick={() => apriInformativa(true)}>
+          Privacy e consenso
+        </button>
       </div>
     </aside>
   )

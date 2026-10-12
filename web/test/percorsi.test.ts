@@ -15,8 +15,8 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 
-import type { Modalita } from '../src/ombra/graph.ts'
-import { ALPHA_MAX, BETA_MAX } from '../src/ombra/area.ts'
+import type { Modalita } from '../src/meriggio/graph.ts'
+import { ALPHA_MAX, BETA_MAX } from '../src/meriggio/area.ts'
 import { apriLocale, esportata } from './area.ts'
 import { carica } from './riferimenti.ts'
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { motore } from '../lib/motore'
-import { meteoPer, type MeteoLive } from '../ombra/meteo'
+import { meteoPer, type MeteoLive } from '../meriggio/meteo'
+import { useConsenso } from '../lib/consenso'
 import { useStore } from '../store'
 
 /** A specchio di `descriviTraffico` in Panel.tsx, ma sull'indice assoluto (non sul risparmio dello slider). */
@@ -30,6 +31,7 @@ export function Condizioni() {
   const minuti = useStore((s) => s.minuti)
   const preparazione = useStore((s) => s.preparazione)
   const imposta = useStore((s) => s.imposta)
+  const { mappa } = useConsenso()
 
   const [meteo, setMeteo] = useState<MeteoLive | undefined>(undefined)
   const [traffico, setTraffico] = useState<{ indice: number; copertura: number } | null>(null)
@@ -44,9 +46,14 @@ export function Condizioni() {
     const timer = window.setTimeout(() => {
       const quando = motore.istante(area.slug, giorno, minuti)
 
-      void meteoPer(area.center[0], area.center[1], quando, area.timezone).then((m) => {
-        if (attivo) setMeteo(m)
-      })
+      // Il meteo e' una richiesta a Open-Meteo: solo con il consenso
+      if (mappa === 'si') {
+        void meteoPer(area.center[0], area.center[1], quando, area.timezone).then((m) => {
+          if (attivo) setMeteo(m)
+        })
+      } else {
+        setMeteo(undefined)
+      }
 
       if (dettaglio?.traffic && !preparazione) {
         motore
@@ -65,7 +72,7 @@ export function Condizioni() {
       attivo = false
       window.clearTimeout(timer)
     }
-  }, [area, dettaglio, preparazione, giorno, minuti])
+  }, [area, dettaglio, preparazione, giorno, minuti, mappa])
 
   // Se il traffico sparisce (cambio area, o non piu' un dato per quest'ora)
   // mentre lo strato era acceso, l'elemento su cui si passa il mouse non fa

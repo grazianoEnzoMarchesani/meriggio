@@ -15,14 +15,14 @@ import { existsSync, readFileSync } from 'node:fs'
 import { gunzipSync } from 'node:zlib'
 import { fileURLToPath } from 'node:url'
 
-import { canopyTransmissivity, sunFactor } from '../src/ombra/shadow.ts'
+import { canopyTransmissivity, sunFactor } from '../src/meriggio/shadow.ts'
 import {
   componiSuperficie,
   decodificaTassello,
   tasselliDi,
   type GrigliaSuperficie,
   type TasselloDecodificato,
-} from '../src/ombra/tiles.ts'
+} from '../src/meriggio/tiles.ts'
 import { carica, daBase64 } from './riferimenti.ts'
 
 const DATI = fileURLToPath(new URL('../public/dati/ascoli-piceno/', import.meta.url))

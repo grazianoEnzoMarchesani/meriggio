@@ -1,4 +1,4 @@
-/** Lettura dei valori di riferimento prodotti da `python -m ombra.cli riferimenti`. */
+/** Lettura dei valori di riferimento prodotti da `python -m meriggio.cli riferimenti`. */
 
 import { gunzipSync } from 'node:zlib'
 import { readFileSync } from 'node:fs'

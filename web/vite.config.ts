@@ -48,7 +48,7 @@ export default defineConfig({
   // conto. Si passa dall'ambiente perche' dipende da dove si pubblica, non da
   // com'e' fatto il programma:
   //
-  //     BASE=/ombra/ npm run build      (o `npm run build:altervista`)
+  //     BASE=/meriggio/ npm run build      (o `npm run build:altervista`)
   base: process.env.BASE ?? '/',
   plugins: [react(), workerMapLibre()],
   optimizeDeps: { exclude: ['maplibre-gl'] },

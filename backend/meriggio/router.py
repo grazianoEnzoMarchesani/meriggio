@@ -388,7 +388,7 @@ def compute_route(
         beta: quanto pesa evitare il traffico (0 = nessun peso, no-op)
         wind_factor: moltiplicatore sul termine di traffico gia' cotto,
             raffinato dal vento live lato client (1.0 = fidati del valore
-            tipico dell'export, vedi `web/src/ombra/vento.ts`)
+            tipico dell'export, vedi `web/src/meriggio/vento.ts`)
 
     Returns:
         dict con il percorso di comfort, quello rapido e il confronto.

@@ -10,8 +10,8 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 
-import { ventoCorrente } from '../src/ombra/vento.ts'
-import { fattoreVento } from '../src/ombra/traffico.ts'
+import { ventoCorrente } from '../src/meriggio/vento.ts'
+import { fattoreVento } from '../src/meriggio/traffico.ts'
 
 test('ventoCorrente non lancia mai: rete irraggiungibile risolve a undefined', async () => {
   const fetchOriginale = globalThis.fetch

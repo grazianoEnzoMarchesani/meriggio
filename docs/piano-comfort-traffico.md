@@ -10,8 +10,8 @@ rifare le ricerche né rileggere la conversazione originale o il PDF del PUMS.
 
 ## Il problema che risolve
 
-Oggi Ombra ottimizza un solo asse di comfort: quanto sole si prende lungo un
-percorso (`web/src/ombra/exposure.ts` + `router.ts`, costo
+Oggi Meriggio ottimizza un solo asse di comfort: quanto sole si prende lungo un
+percorso (`web/src/meriggio/exposure.ts` + `router.ts`, costo
 `tempo × (1 + α × esposizione × carico_solare)`). L'idea discussa con l'autore
 è aggiungere un secondo asse — quanto traffico/inquinamento si respira lungo
 la strada — usando come input reale i conteggi di traffico di un rilievo
@@ -20,7 +20,7 @@ ufficiale del PUMS di Ascoli Piceno (TPS Pro srl, maggio 2025, documento
 
 Il problema di fondo: quei conteggi sono **puntuali** (poche sezioni stradali
 e intersezioni monitorate per pochi giorni), mentre serve un valore per
-**ogni tratto** del grafo stradale che Ombra già usa per il routing. Questo
+**ogni tratto** del grafo stradale che Meriggio già usa per il routing. Questo
 documento descrive come è stata decisa la spazializzazione, con quali dati e
 quali vincoli architetturali.
 
@@ -28,8 +28,8 @@ quali vincoli architetturali.
 
 ## Vincoli architetturali da rispettare (letti dal codice, non assunti)
 
-Ombra è **una pagina statica**: il calcolo di ombre e percorso avviene nel
-browser (`web/src/ombra/`), non su un server. Il Python in `backend/` gira
+Meriggio è **una pagina statica**: il calcolo di ombre e percorso avviene nel
+browser (`web/src/meriggio/`), non su un server. Il Python in `backend/` gira
 solo una volta per città, offline, per preparare i file statici che finiscono
 in `web/public/dati/` e vengono committati. Non c'è nessun servizio acceso in
 mezzo — l'app funziona anche da un telefono in rete mobile, senza backend da
@@ -59,13 +59,13 @@ Conseguenze dirette per questo lavoro:
 
 ## Cosa esiste già da riusare
 
-- **Geometria degli edifici**: `backend/ombra/surface.py` e
-  `web/src/ombra/edifici.ts` leggono già `buildings.geojson` in UTM. Da qui si
+- **Geometria degli edifici**: `backend/meriggio/surface.py` e
+  `web/src/meriggio/edifici.ts` leggono già `buildings.geojson` in UTM. Da qui si
   può derivare il rapporto altezza/larghezza del canyon stradale (H/W) per
   ogni tratto, che serve al modello di dispersione (vedi sotto) — non va
   ricostruito da zero, è lo stesso dato usato per le ombre degli edifici.
-- **Grafo stradale già segmentato**: `backend/ombra/graph.py` /
-  `web/src/ombra/graph.ts` tagliano la rete OSM in tratti da ~25 m, con
+- **Grafo stradale già segmentato**: `backend/meriggio/graph.py` /
+  `web/src/meriggio/graph.ts` tagliano la rete OSM in tratti da ~25 m, con
   attributi per tratto (lunghezza, pendenza, scomodità del fondo, permessi per
   modalità). Il nuovo indice di esposizione al traffico è **un attributo in
   più su questi stessi tratti**, non un nuovo grafo.
@@ -195,12 +195,12 @@ tocca alla nuova sessione.
 ## Design proposto
 
 1. **Dataset ausiliario Ascoli-specifico**: trascrivere le tabelle PUMS (sopra)
-   in `backend/ombra/data/ascoli-piceno/pums_traffico.csv` (o simile) — per
+   in `backend/meriggio/data/ascoli-piceno/pums_traffico.csv` (o simile) — per
    sezione: via, geometria approssimata (da associare ai tratti OSM più
    vicini), conteggi per classe veicolare nelle 3 fasce di punta, indice
    veicoli-equivalenti già calcolato dal PDF (pesa i mezzi pesanti più delle
    auto — è già nella tabella "TOTALE VEICOLI EQUIVALENTI" dei report PUMS).
-2. **Nuovo modulo backend** (nome indicativo `backend/ombra/traffico.py`,
+2. **Nuovo modulo backend** (nome indicativo `backend/meriggio/traffico.py`,
    sullo stile di `exposure.py`): in fase di `prepara`/`esporta`, per ogni
    tratto del grafo (25 m) calcola un indice statico di esposizione al
    traffico:
@@ -223,7 +223,7 @@ tocca alla nuova sessione.
 3. **Export**: aggiungere l'indice come attributo in più nel grafo binario
    (`export.py`/`graph.ts`), versionando il formato se cambia la struttura
    del file (stessa disciplina della fase 3 sui tasselli).
-4. **Nuovo modulo web** (nome indicativo `web/src/ombra/traffico.ts`,
+4. **Nuovo modulo web** (nome indicativo `web/src/meriggio/traffico.ts`,
    parallelo a `exposure.ts`): legge il coefficiente statico + orario dal
    grafo, e — se online — puo' migliorarlo con un fetch diretto (client-side,
    cache-ato) a Open-Meteo per il vento attuale, ricalcolando solo il termine
@@ -242,7 +242,7 @@ tocca alla nuova sessione.
 ## Punti aperti da decidere nella nuova sessione (non risolti qui)
 
 - **Ascoli-only o generalizzabile?** La calibrazione PUMS esiste solo per
-  Ascoli Piceno. Per altre città (`ombra.cli prepara --luogo "Bologna"`)
+  Ascoli Piceno. Per altre città (`meriggio.cli prepara --luogo "Bologna"`)
   esisterebbe solo il fallback tipologico, senza validazione reale. Decidere
   se: (a) offrire il layer traffico ovunque con un disclaimer di minore
   affidabilità fuori Ascoli, o (b) offrirlo solo dove c'è calibrazione reale.

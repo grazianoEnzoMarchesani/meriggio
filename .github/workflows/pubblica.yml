@@ -3,10 +3,10 @@
 # Non c'e' nessun servizio da avviare: il sito e' fatto di file, e questo
 # flusso li assembla e li mette online. I dati delle aree (tasselli, grafo,
 # edifici) stanno gia' nel repository dentro `web/public/dati`, prodotti sul
-# portatile da `python -m ombra.cli prepara`: qui non si scarica ne' si
+# portatile da `python -m meriggio.cli prepara`: qui non si scarica ne' si
 # elabora nulla di geografico.
 #
-# Presuppone che questa cartella `ombra` sia la radice del repository. Se
+# Presuppone che la radice del repository sia la cartella di Meriggio. Se
 # stesse piu' in basso, vanno spostati i `working-directory` e i percorsi.
 
 name: Pubblica su Pages

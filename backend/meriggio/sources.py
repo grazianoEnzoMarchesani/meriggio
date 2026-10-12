@@ -20,7 +20,7 @@ from pathlib import Path
 
 import requests
 
-USER_AGENT = "Ombra/1.0 (percorsi all'ombra; https://github.com/ombra)"
+USER_AGENT = "Meriggio/1.0 (percorsi all'ombra; https://github.com/grazianoEnzoMarchesani/meriggio)"
 _TIMEOUT = 300
 
 

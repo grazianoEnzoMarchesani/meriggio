@@ -15,7 +15,7 @@
  */
 
 export const VERSIONE_VENTO = 1
-const CACHE_VENTO = `ombra-vento-v${VERSIONE_VENTO}`
+const CACHE_VENTO = `meriggio-vento-v${VERSIONE_VENTO}`
 
 // Open-Meteo aggiorna il "current" ogni 15' (dati del modello a 15 minuti):
 // oltre questa soglia una lettura in cache e' comunque da rifare.

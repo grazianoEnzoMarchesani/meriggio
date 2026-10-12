@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { apriInformativa, scegli as impostaConsenso, useConsenso } from '../lib/consenso'
 import { motore, type Luogo } from '../lib/motore'
 import { useStore } from '../store'
 
@@ -18,6 +19,8 @@ export function CapoInput({ tipo, segnaposto }: Props) {
   const area = useStore((s) => s.area)
   const attendi = useStore((s) => s.attendi)
   const impostaPunto = useStore((s) => s.impostaPunto)
+  const consenso = useConsenso()
+  const ricercaOk = consenso.ricerca === 'si'
 
   const [testo, setTesto] = useState('')
   const [cerca, setCerca] = useState(false)
@@ -27,7 +30,7 @@ export function CapoInput({ tipo, segnaposto }: Props) {
 
   // Ricerca con attesa, per non interrogare a ogni tasto premuto
   useEffect(() => {
-    if (!cerca || testo.trim().length < 2 || !area) {
+    if (!cerca || !ricercaOk || testo.trim().length < 2 || !area) {
       setRisultati([])
       return
     }
@@ -43,7 +46,7 @@ export function CapoInput({ tipo, segnaposto }: Props) {
       clearTimeout(t)
       ctrl.abort()
     }
-  }, [testo, cerca, area])
+  }, [testo, cerca, area, ricercaOk])
 
   useEffect(() => {
     if (!cerca) return
@@ -96,7 +99,8 @@ export function CapoInput({ tipo, segnaposto }: Props) {
         <input
           autoFocus
           value={testo}
-          placeholder={`Cerca ${segnaposto.toLowerCase()}...`}
+          placeholder={ricercaOk ? `Cerca ${segnaposto.toLowerCase()}...` : 'Ricerca di indirizzi non attiva'}
+          disabled={!ricercaOk}
           onChange={(e) => setTesto(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Escape') {
@@ -106,7 +110,7 @@ export function CapoInput({ tipo, segnaposto }: Props) {
             if (e.key === 'Enter' && risultati.length) scegli(risultati[0])
           }}
         />
-        {(risultati.length > 0 || testo.trim().length < 2) && (
+        {(risultati.length > 0 || testo.trim().length < 2 || !ricercaOk) && (
           <div className="suggerimenti">
             {'geolocation' in navigator && (
               <button
@@ -117,6 +121,23 @@ export function CapoInput({ tipo, segnaposto }: Props) {
                 <strong>{localizzo ? 'Ti sto cercando…' : 'La mia posizione'}</strong>
                 <small>usa il GPS del dispositivo</small>
               </button>
+            )}
+            {!ricercaOk && (
+              <div className="suggerimento suggerimento--nota">
+                <strong>La ricerca di indirizzi è spenta</strong>
+                <small>
+                  Scegli il punto con un clic sulla mappa, oppure attiva la ricerca: il testo che scrivi verrebbe
+                  inviato a Nominatim (OpenStreetMap).
+                </small>
+                <span className="suggerimento__azioni">
+                  <button className="bottone bottone--acceso" onClick={() => impostaConsenso('si', 'si')}>
+                    Attiva la ricerca
+                  </button>
+                  <button className="bottone" onClick={() => apriInformativa(true)}>
+                    Informativa
+                  </button>
+                </span>
+              </div>
             )}
             {risultati.map((l, i) => (
               <button

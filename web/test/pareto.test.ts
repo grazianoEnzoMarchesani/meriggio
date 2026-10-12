@@ -21,18 +21,18 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 
-import { FOOT, type Grafo, type Modalita } from '../src/ombra/graph.ts'
-import { Esposizione } from '../src/ombra/exposure.ts'
-import { mezzanotteLocale, minutiDelGiorno } from '../src/ombra/fusi.ts'
-import { esposizioneCorridoio } from '../src/ombra/live.ts'
-import { dijkstra, preparaRicerca } from '../src/ombra/router.ts'
+import { FOOT, type Grafo, type Modalita } from '../src/meriggio/graph.ts'
+import { Esposizione } from '../src/meriggio/exposure.ts'
+import { mezzanotteLocale, minutiDelGiorno } from '../src/meriggio/fusi.ts'
+import { esposizioneCorridoio } from '../src/meriggio/live.ts'
+import { dijkstra, preparaRicerca } from '../src/meriggio/router.ts'
 import {
   calcolaFrontieraParetoTempoSole,
   domina,
   frontieraParetoTempoSole,
   ricostruisciCammino,
   scegliDallaFrontiera,
-} from '../src/ombra/pareto.ts'
+} from '../src/meriggio/pareto.ts'
 import { apriLocale, esportata } from './area.ts'
 import { carica } from './riferimenti.ts'
 

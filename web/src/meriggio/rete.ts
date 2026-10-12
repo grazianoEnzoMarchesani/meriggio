@@ -30,7 +30,7 @@ import { VERSIONE_TASSELLI } from './tiles.ts'
 // rimasto li' per sempre: la stessa `url` (`graph.bin.gz` non cambia nome fra
 // versioni) trova sempre una corrispondenza in `conservata()`, quindi non
 // verrebbe mai riscaricato anche dopo una nuova esportazione sul server.
-const CACHE = `ombra-dati-v${VERSIONE_TASSELLI}-g${VERSIONE_GRAFO}`
+const CACHE = `meriggio-dati-v${VERSIONE_TASSELLI}-g${VERSIONE_GRAFO}`
 
 /** Butta gli scaffali di un formato che non e' piu' quello di adesso. */
 let ripulita: Promise<void> | null = null
@@ -42,7 +42,8 @@ function ripulisci(): Promise<void> {
       const nomi = await caches.keys()
       await Promise.all(
         nomi
-          .filter((n) => n.startsWith('ombra-dati-') && n !== CACHE)
+          // Anche le cache col vecchio nome dell'app ("ombra-...")
+          .filter((n) => (n.startsWith('meriggio-dati-') && n !== CACHE) || n.startsWith('ombra-'))
           .map((n) => caches.delete(n)),
       )
     } catch {

@@ -7,7 +7,7 @@ misure.
 
 ## Il problema che risolve
 
-Oggi (`backend/ombra/bake.py`, funzione `bake_day`) il calcolo delle ombre per
+Oggi (`backend/meriggio/bake.py`, funzione `bake_day`) il calcolo delle ombre per
 il routing precalcola **l'intera giornata su tutta l'area preparata** (60-65
 istanti × l'intero raster) al primo utente che chiede quel giorno per quella
 città, e lo salva in `.npz`. Misurato su Ascoli (la città più piccola del
@@ -112,7 +112,7 @@ ritagli senza toccare il codice.
 
 ## Stato del codice al momento dell'handoff
 
-- `backend/ombra/bake.py` e' gia' stato modificato per parallelizzare
+- `backend/meriggio/bake.py` e' gia' stato modificato per parallelizzare
   `bake_day` su piu' processi (funzioni `_init_worker`/`_compute_step`,
   `ProcessPoolExecutor`). Funziona (verificato anche dentro il thread di
   `api.py`), ma da solo non risolve il problema di fondo: resta li' come
@@ -123,8 +123,8 @@ ritagli senza toccare il codice.
 
 ## Esito: implementato
 
-Il piano e' stato realizzato in `backend/ombra/live.py`, con
-`backend/ombra/exposure.py` a fare da interfaccia comune verso il router.
+Il piano e' stato realizzato in `backend/meriggio/live.py`, con
+`backend/meriggio/exposure.py` a fare da interfaccia comune verso il router.
 `shadow.py` non e' stato toccato, come previsto. Segue la risposta misurata
 ai punti che erano rimasti aperti.
 

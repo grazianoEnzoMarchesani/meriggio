@@ -22,7 +22,7 @@ CACHE_DIR = DATA_ROOT / "cache"
 AOI_DIR = DATA_ROOT / "aoi"
 
 NOMINATIM = "https://nominatim.openstreetmap.org"
-USER_AGENT = "Ombra/1.0 (percorsi all'ombra)"
+USER_AGENT = "Meriggio/1.0 (percorsi all'ombra)"
 
 
 def slugify(text: str) -> str:

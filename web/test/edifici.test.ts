@@ -26,11 +26,11 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 
-import { leggiEdifici } from '../src/ombra/edifici.ts'
-import { marginiSole, portataOmbra } from '../src/ombra/live.ts'
-import { disegnaOmbre, latDaMercatore, mercatoreY, MAX_OPACITY } from '../src/ombra/overlay.ts'
-import { canopyTransmissivity, pixelDiPunti, sunFactor } from '../src/ombra/shadow.ts'
-import { componiSuperficie, riquadroPixel, tasselliDi } from '../src/ombra/tiles.ts'
+import { leggiEdifici } from '../src/meriggio/edifici.ts'
+import { marginiSole, portataOmbra } from '../src/meriggio/live.ts'
+import { disegnaOmbre, latDaMercatore, mercatoreY, MAX_OPACITY } from '../src/meriggio/overlay.ts'
+import { canopyTransmissivity, pixelDiPunti, sunFactor } from '../src/meriggio/shadow.ts'
+import { componiSuperficie, riquadroPixel, tasselliDi } from '../src/meriggio/tiles.ts'
 import { apriLocale, esportata, DATI } from './area.ts'
 
 const disponibile = esportata('ascoli-piceno')

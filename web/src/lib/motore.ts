@@ -8,20 +8,22 @@
  * La divisione del lavoro e' questa: qui sul filo dell'interfaccia restano le
  * cose che costano niente e servono subito (l'elenco delle aree, la posizione
  * del sole, alba e tramonto), mentre grafo, tasselli, ombre e Dijkstra stanno
- * nel worker. L'unica cosa che continua a passare dalla rete e' la ricerca
- * degli indirizzi, che e' un servizio di OpenStreetMap e non nostro.
+ * nel worker. Verso servizi di terzi escono solo la ricerca degli indirizzi
+ * (OpenStreetMap), il meteo e il vento (Open-Meteo) e la mappa (OpenFreeMap),
+ * e solo dopo il consenso di chi usa l'app (`consenso.ts`).
  */
 
-import type { Risultato } from '../ombra/area.ts'
-import type { Modalita } from '../ombra/graph.ts'
-import { giornoLocale, istanteLocale, mezzanotteLocale, oraLocale } from '../ombra/fusi.ts'
-import type { QuattroAngoli } from '../ombra/overlay.ts'
-import { solarLoad, solarPosition, sunTimes } from '../ombra/solar.ts'
-import type { Manifesto, VoceIndice } from '../ombra/area.ts'
-import type { Domanda } from '../ombra/worker.ts'
+import type { Risultato } from '../meriggio/area.ts'
+import type { Modalita } from '../meriggio/graph.ts'
+import { giornoLocale, istanteLocale, mezzanotteLocale, oraLocale } from '../meriggio/fusi.ts'
+import type { QuattroAngoli } from '../meriggio/overlay.ts'
+import { solarLoad, solarPosition, sunTimes } from '../meriggio/solar.ts'
+import type { Manifesto, VoceIndice } from '../meriggio/area.ts'
+import type { Domanda } from '../meriggio/worker.ts'
+import { consensoMappa, consensoRicerca } from './consenso'
 
 export type { Modalita }
-export type { Percorso, Segmento } from '../ombra/router.ts'
+export type { Percorso, Segmento } from '../meriggio/router.ts'
 export type { QuattroAngoli }
 
 /** Dove stanno i dati esportati, rispetto alla radice del sito. */
@@ -31,7 +33,7 @@ const RADICE = `${import.meta.env.BASE_URL}dati/`
  * Lo stesso indirizzo in forma assoluta.
  *
  * Serve al worker, che risolve i percorsi dei file con `new URL(x, base)`: la
- * base dev'essere un indirizzo completo, e `/ombra/dati/` da solo non lo e'.
+ * base dev'essere un indirizzo completo, e `/meriggio/dati/` da solo non lo e'.
  */
 const RADICE_ASSOLUTA = new URL(RADICE, location.href).toString()
 
@@ -100,7 +102,7 @@ const inAttesa = new Map<number, { risolvi: (v: unknown) => void; rifiuta: (e: E
 
 function avvia(): Worker {
   if (worker) return worker
-  worker = new Worker(new URL('../ombra/worker.ts', import.meta.url), { type: 'module' })
+  worker = new Worker(new URL('../meriggio/worker.ts', import.meta.url), { type: 'module' })
   worker.onmessage = (e: MessageEvent<{ id: number; esito?: unknown; errore?: string }>) => {
     const attesa = inAttesa.get(e.data.id)
     if (!attesa) return
@@ -276,6 +278,8 @@ export const motore = {
       quando: richiesta.istante.getTime(),
       preferenzaOmbra: richiesta.preferenzaOmbra,
       preferenzaTraffico: richiesta.preferenzaTraffico,
+      // Il vento live e' una richiesta a Open-Meteo: solo con il consenso
+      ventoLive: consensoMappa(),
     })
   },
 
@@ -311,6 +315,7 @@ export const motore = {
    * restano il clic sulla mappa e il pulsante della posizione.
    */
   async cerca(q: string, slug: string, signal?: AbortSignal): Promise<Luogo[]> {
+    if (!consensoRicerca()) throw new ErroreMotore('ricerca non consentita')
     const m = await manifesto(slug)
     const [lon0, lat0, lon1, lat1] = m.bounds
     const url =

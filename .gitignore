@@ -1,4 +1,4 @@
-# dati scaricati e derivati: si rigenerano con `ombra.cli prepara`
+# dati scaricati e derivati: si rigenerano con `meriggio.cli prepara`
 backend/data/
 backend/.venv/
 __pycache__/

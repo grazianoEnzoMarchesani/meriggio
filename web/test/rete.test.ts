@@ -16,8 +16,8 @@ import { readFile } from 'node:fs/promises'
 import { gunzipSync } from 'node:zlib'
 import { extname, normalize } from 'node:path'
 
-import { Area } from '../src/ombra/area.ts'
-import { sorgenteRete } from '../src/ombra/rete.ts'
+import { Area } from '../src/meriggio/area.ts'
+import { sorgenteRete } from '../src/meriggio/rete.ts'
 import { DATI, esportata } from './area.ts'
 
 /**

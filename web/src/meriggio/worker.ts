@@ -28,6 +28,7 @@ export interface DomandaPercorso {
   quando: number
   preferenzaOmbra: number
   preferenzaTraffico: number
+  ventoLive?: boolean
 }
 
 export interface DomandaOmbre {
@@ -77,6 +78,7 @@ async function svolgi(d: Domanda): Promise<{ esito: unknown; trasferibili: Trans
       quando: new Date(d.quando),
       preferenzaOmbra: d.preferenzaOmbra,
       preferenzaTraffico: d.preferenzaTraffico,
+      ventoLive: d.ventoLive,
     })
     return { esito, trasferibili: [] }
   }

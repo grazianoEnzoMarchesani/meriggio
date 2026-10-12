@@ -16,13 +16,13 @@ import { readFileSync } from 'node:fs'
 import { gunzipSync } from 'node:zlib'
 import { fileURLToPath } from 'node:url'
 
-import { canopyTransmissivity, sunFactor, sunFactorPoints } from '../src/ombra/shadow.ts'
+import { canopyTransmissivity, sunFactor, sunFactorPoints } from '../src/meriggio/shadow.ts'
 import {
   componiSuperficie,
   decodificaTassello,
   tasselliDi,
   type TasselloDecodificato,
-} from '../src/ombra/tiles.ts'
+} from '../src/meriggio/tiles.ts'
 
 const DATI = fileURLToPath(new URL('../public/dati/ascoli-piceno/', import.meta.url))
 const manifest = JSON.parse(readFileSync(`${DATI}manifest.json`, 'utf8'))

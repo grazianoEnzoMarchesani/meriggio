@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "build:altervista": "BASE=/ombra/ npm run build",
+    "build:altervista": "BASE=/meriggio/ npm run build",
     "lint": "oxlint",
     "preview": "vite preview",
     "test": "node --test \"test/**/*.test.ts\"",

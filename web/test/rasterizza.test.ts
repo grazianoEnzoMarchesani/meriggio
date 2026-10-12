@@ -10,7 +10,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 
-import { areaSegnata, riempi } from '../src/ombra/rasterizza.ts'
+import { areaSegnata, riempi } from '../src/meriggio/rasterizza.ts'
 
 const LATO = 200
 

@@ -16,7 +16,7 @@
 import { giornoLocale, oraLocale } from './fusi.ts'
 
 export const VERSIONE_METEO = 2
-const CACHE_METEO = `ombra-meteo-v${VERSIONE_METEO}`
+const CACHE_METEO = `meriggio-meteo-v${VERSIONE_METEO}`
 
 // Un giorno intero (le richieste sono per data, non per istante): oltre
 // questa soglia una lettura in cache e' comunque da rifare, per lasciare
@@ -194,7 +194,7 @@ export async function meteoPer(
   try {
     return await fetchMeteoOra(lon, lat, quando, fuso)
   } catch (errore) {
-    console.warn('[ombra] meteo non disponibile:', errore)
+    console.warn('[meriggio] meteo non disponibile:', errore)
     return undefined
   }
 }

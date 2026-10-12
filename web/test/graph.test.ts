@@ -10,7 +10,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 
-import { leggiGrafo, VERSIONE_GRAFO } from '../src/ombra/graph.ts'
+import { leggiGrafo, VERSIONE_GRAFO } from '../src/meriggio/graph.ts'
 
 /** Concatena un array tipizzato al buffer, paddato a 4 byte come `export.py`. */
 function aggiungi(parti: Uint8Array[], arr: ArrayBufferView): void {

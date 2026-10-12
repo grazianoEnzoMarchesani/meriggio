@@ -47,17 +47,17 @@ Verificato contro `dtm.tif`: scarto massimo **0,13 m**, medio 0,01 m.
 
 ### Fase 2 — le ombre degli edifici in geometria
 
-- **`src/ombra/edifici.ts`** — legge `buildings.geojson` e lo porta in UTM una
+- **`src/meriggio/edifici.ts`** — legge `buildings.geojson` e lo porta in UTM una
   volta sola; costruisce l'ombra come somma di Minkowski dell'impronta con il
   raggio solare (impronta + copia traslata + un quadrilatero per lato), e per
   ogni vertice insegue il raggio finché non incontra qualcosa.
-- **`src/ombra/rasterizza.ts`** — riempie i poligoni con i bordi sfumati, in JS
+- **`src/meriggio/rasterizza.ts`** — riempie i poligoni con i bordi sfumati, in JS
   puro (niente `Path2D`: deve girare nel worker e nei test in node). Otto
   sotto-righe per riga, copertura esatta in orizzontale, avvolgimento non-zero
   perché i pezzi si fondano senza cuciture. Gli intervalli pieni sono segnati
   solo agli estremi e riaperti da una somma cumulata: senza questo costava
   200 ms per fotogramma.
-- **`src/ombra/overlay.ts`** — mette insieme le due maschere prendendo la più
+- **`src/meriggio/overlay.ts`** — mette insieme le due maschere prendendo la più
   scura, e ritaglia via l'ombra che cadrebbe sulle impronte.
 
 ---
@@ -155,7 +155,7 @@ Sono errori fatti davvero in fase 2. Costano ore se ripetuti.
   i file in Cache Storage di proposito. Cambiando il formato dei tasselli, il
   client continuava a leggersi quelli vecchi e falliva con «tassello di
   versione 1» anche dopo la riesportazione. Ora il nome della cache porta la
-  versione del formato (`ombra-dati-v${VERSIONE_TASSELLI}`) e un giro di pulizia
+  versione del formato (`meriggio-dati-v${VERSIONE_TASSELLI}`) e un giro di pulizia
   butta gli scaffali vecchi. **Se la fase 3 cambia ancora il formato, la
   versione va alzata lì.**
 - **Il raster e la geometria rispondono a due domande diverse.** Il raster dice
@@ -199,7 +199,7 @@ npm run prestazioni
 Dalla cartella `backend/`:
 
 ```
-.venv/bin/python -m ombra.cli esporta --area ascoli-piceno
+.venv/bin/python -m meriggio.cli esporta --area ascoli-piceno
 ```
 
 I test che coprono il lavoro nuovo:

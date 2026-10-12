@@ -26,10 +26,10 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { gunzipSync } from 'node:zlib'
 
-import { portataOmbra } from '../src/ombra/live.ts'
-import { latDaMercatore, mercatoreY, MAX_OPACITY, disegnaOmbre } from '../src/ombra/overlay.ts'
-import { canopyTransmissivity, pixelDiPunti, sunFactor } from '../src/ombra/shadow.ts'
-import { decodificaTassello, superficieDaVeduta } from '../src/ombra/tiles.ts'
+import { portataOmbra } from '../src/meriggio/live.ts'
+import { latDaMercatore, mercatoreY, MAX_OPACITY, disegnaOmbre } from '../src/meriggio/overlay.ts'
+import { canopyTransmissivity, pixelDiPunti, sunFactor } from '../src/meriggio/shadow.ts'
+import { decodificaTassello, superficieDaVeduta } from '../src/meriggio/tiles.ts'
 import { apriLocale, esportata, DATI } from './area.ts'
 
 const disponibile = esportata('ascoli-piceno')

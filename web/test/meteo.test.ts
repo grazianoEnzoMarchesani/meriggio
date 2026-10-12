@@ -10,7 +10,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 
-import { descriviCodiceMeteo, meteoPer } from '../src/ombra/meteo.ts'
+import { descriviCodiceMeteo, meteoPer } from '../src/meriggio/meteo.ts'
 
 // Europe/Rome e' UTC+1 a gennaio (nessun'ora legale): le 08:00 UTC sono le
 // 09:00 locali, l'ora che i fixture qui sotto si aspettano di trovare.

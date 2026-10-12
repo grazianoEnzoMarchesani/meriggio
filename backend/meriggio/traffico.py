@@ -60,7 +60,7 @@ import numpy as np
 # Il CSV PUMS e' dato curato a mano, committato accanto al codice -- non un
 # artefatto generato sotto `aoi.dir` (vedi aoi.AOI_DIR). Vive in una terza
 # cartella sorella di `aoi.DATA_ROOT` (`backend/data/`), dentro il pacchetto
-# stesso: `backend/ombra/data/<slug>/`.
+# stesso: `backend/meriggio/data/<slug>/`.
 PUMS_DIR = Path(__file__).resolve().parent / "data"
 
 # ---------------------------------------------------------------------------

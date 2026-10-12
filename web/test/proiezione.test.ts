@@ -12,7 +12,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 
-import { fusoDaEpsg, versoGradi, versoUtm } from '../src/ombra/utm.ts'
+import { fusoDaEpsg, versoGradi, versoUtm } from '../src/meriggio/utm.ts'
 import { carica } from './riferimenti.ts'
 
 interface Caso {

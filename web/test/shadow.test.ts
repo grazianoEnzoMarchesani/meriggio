@@ -17,7 +17,7 @@ import {
   samplePoints,
   sunFactor,
   sunFactorPoints,
-} from '../src/ombra/shadow.ts'
+} from '../src/meriggio/shadow.ts'
 import { carica, daBase64, scartoMax } from './riferimenti.ts'
 
 interface Caso {

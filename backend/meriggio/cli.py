@@ -1,8 +1,8 @@
 """Interfaccia a riga di comando della pipeline.
 
-    python -m ombra.cli prepara --luogo "Ascoli Piceno" --raggio 1.7
-    python -m ombra.cli esporta --area ascoli-piceno
-    python -m ombra.cli elenco
+    python -m meriggio.cli prepara --luogo "Ascoli Piceno" --raggio 1.7
+    python -m meriggio.cli esporta --area ascoli-piceno
+    python -m meriggio.cli elenco
 """
 
 from __future__ import annotations
@@ -181,7 +181,7 @@ def elenco(args) -> int:
 
 
 def main(argv=None) -> int:
-    p = argparse.ArgumentParser(prog="ombra", description="Pipeline dati per percorsi all'ombra")
+    p = argparse.ArgumentParser(prog="meriggio", description="Pipeline dati per percorsi all'ombra")
     sub = p.add_subparsers(dest="cmd", required=True)
 
     pr = sub.add_parser("prepara", help="scarica i dati e prepara un'area")

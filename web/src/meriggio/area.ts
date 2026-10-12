@@ -106,6 +106,8 @@ export interface RichiestaPercorso {
    * che non conoscono ancora questo asse (default 0 dentro `percorso()`).
    */
   preferenzaTraffico?: number
+  /** false: niente richiesta a Open-Meteo, si usa il vento tipico (default true) */
+  ventoLive?: boolean
 }
 
 /** Quanto puo' pesare al massimo l'avversione al sole nel costo di un tratto. */
@@ -351,7 +353,8 @@ export class Area {
     let fv = 1.0
     if (beta > 0 && this.manifesto.traffic) {
       const [lon, lat] = this.manifesto.center
-      const ventoLive = await ventoCorrente(lon, lat).catch(() => undefined)
+      const ventoLive =
+        r.ventoLive === false ? undefined : await ventoCorrente(lon, lat).catch(() => undefined)
       fv = fattoreVento(this.manifesto.traffic.wind_typical, ventoLive)
     }
 

@@ -1,4 +1,4 @@
-/* Ombra - sistema visivo.
+/* Meriggio - sistema visivo.
    Tutto ruota attorno a una sola opposizione: l'ambra del sole e il
    verde-acqua profondo dell'ombra. Ogni colore dell'interfaccia nasce da
    quella coppia, cosi' che la mappa e i comandi raccontino la stessa cosa. */
@@ -836,3 +836,88 @@ input[type='range']::-moz-range-thumb {
   .maplibregl-ctrl-attrib.maplibregl-compact-show:focus-within .maplibregl-ctrl-attrib-inner { display: block; }
   .maplibregl-ctrl-attrib.maplibregl-compact-show { padding: 2px 24px 2px 0; }
 }
+
+/* ------------------------------------------------- consenso e informativa */
+
+.link-privacy {
+  align-self: flex-start;
+  border: none; background: none; padding: 0;
+  font-size: 11.5px; color: var(--debole);
+  text-decoration: underline; text-underline-offset: 2px;
+}
+.link-privacy:hover { color: var(--inchiostro-tenue); }
+
+.velo {
+  position: fixed; inset: 0; z-index: 50;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  background: rgba(20, 24, 31, 0.45);
+}
+/* La domanda sul consenso copre tutto: finche' non si risponde non c'e' altro */
+.velo--pieno { z-index: 100; background: var(--fondo); }
+/* L'informativa si apre anche sopra la domanda */
+.velo--alto { z-index: 200; }
+
+.finestra {
+  width: min(460px, 100%); max-height: 100%;
+  display: flex; flex-direction: column;
+  background: #fff;
+  border: 1px solid var(--bordo);
+  border-radius: var(--r-l);
+  box-shadow: var(--ombra-media);
+  overflow: hidden;
+}
+.finestra--larga { width: min(680px, 100%); }
+.finestra h2 { margin: 0 0 8px; font-size: 19px; font-weight: 640; letter-spacing: -0.015em; }
+.finestra__testa {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--bordo);
+}
+.finestra__testa h2 { margin: 0; }
+.finestra__corpo { padding: 22px 22px 6px; overflow-y: auto; }
+.finestra__corpo p { margin: 0 0 10px; font-size: 13.5px; line-height: 1.5; }
+.finestra__nota { margin: 2px 0 0; font-size: 12px; color: var(--inchiostro-tenue); line-height: 1.45; }
+.finestra__corpo p.finestra__nota { font-size: 12px; color: var(--inchiostro-tenue); }
+.finestra__elenco { margin: 0 0 10px; padding-left: 18px; font-size: 13.5px; line-height: 1.5; }
+.finestra__azioni { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px 22px 8px; }
+.finestra__azioni .bottone { flex: 1 1 auto; justify-content: center; }
+.finestra__link {
+  align-self: flex-start;
+  border: none; background: none;
+  margin: 4px 22px 18px; padding: 0;
+  font-size: 12px; color: var(--inchiostro-tenue);
+  text-decoration: underline; text-underline-offset: 2px;
+}
+.bottone--grande { padding: 10px 14px; font-size: 13px; border-radius: var(--r-m); }
+
+.informativa h3 {
+  margin: 18px 0 6px;
+  font-size: 11px; font-weight: 620; text-transform: uppercase; letter-spacing: 0.07em;
+  color: var(--inchiostro-tenue);
+}
+.informativa h3:first-child { margin-top: 0; }
+.informativa ul { margin: 0 0 10px; padding-left: 18px; font-size: 13.5px; line-height: 1.5; }
+.informativa li { margin: 3px 0; }
+.informativa a { color: var(--ombra); }
+.informativa code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px;
+  background: var(--fondo); padding: 1px 4px; border-radius: 3px;
+}
+.informativa__scelta {
+  margin: 14px 0 4px; padding: 10px 12px;
+  border: 1px solid var(--bordo-forte); border-radius: var(--r-m); background: var(--fondo);
+}
+.informativa__riga { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 8px; font-size: 13px; }
+.informativa__tabella { overflow-x: auto; margin: 0 0 10px; }
+.informativa table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.informativa th, .informativa td {
+  text-align: left; vertical-align: top; padding: 7px 8px;
+  border: 1px solid var(--bordo-forte);
+}
+.informativa th { color: var(--inchiostro-tenue); font-weight: 620; }
+
+.suggerimento--nota { cursor: default; }
+.suggerimento--nota:hover { background: transparent; }
+.suggerimento__azioni { display: flex; gap: 6px; margin-top: 8px; }
+.suggerimento--nota small { white-space: normal; overflow: visible; line-height: 1.4; margin-top: 2px; }

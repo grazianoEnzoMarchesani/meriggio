@@ -4,7 +4,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { gunzipSync } from 'node:zlib'
 import { fileURLToPath } from 'node:url'
 
-import { Area, type Sorgente } from '../src/ombra/area.ts'
+import { Area, type Sorgente } from '../src/meriggio/area.ts'
 
 export const DATI = fileURLToPath(new URL('../public/dati/', import.meta.url))
 

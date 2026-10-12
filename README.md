@@ -17,7 +17,7 @@ Non c'è niente da tenere acceso.
 ## L'idea
 
 Chi cammina d'estate in una città italiana non sceglie la via più corta: sceglie
-il lato della strada con l'ombra. Ombra fa esattamente questo, ma su scala
+il lato della strada con l'ombra. Meriggio fa esattamente questo, ma su scala
 urbana e con qualche minuto di anticipo.
 
 Il punto interessante è che **il problema non è un cammino minimo classico**. Il
@@ -39,17 +39,20 @@ poi si spegne.
 
 **Tutte le volte che serve un percorso**, nel browser: si scaricano i pochi file
 che coprono il tragitto, si calcolano le ombre e si cerca la strada. È il codice
-TypeScript in `web/src/ombra/`, dove il motore Python è stato riportato
+TypeScript in `web/src/meriggio/`, dove il motore Python è stato riportato
 funzione per funzione.
 
-In mezzo non c'è nessun servizio. La pagina va su GitHub Pages come qualsiasi
-sito fatto di file, e da lì funziona anche da un telefono in rete mobile.
+In mezzo non c'è nessun servizio nostro. La pagina va su GitHub Pages come
+qualsiasi sito fatto di file, e da lì funziona anche da un telefono in rete
+mobile. Verso servizi di terzi escono solo lo sfondo della mappa, il meteo e,
+se lo si vuole, la ricerca di indirizzi, e solo dopo il consenso di chi usa
+l'app: vedi [Privacy](#privacy).
 
 Che il porting sia fedele non è un auspicio: `web/test/` confronta i numeri
 delle due implementazioni sugli stessi casi. La posizione del sole coincide
 fino alla nona cifra, le ombre coincidono **pixel per pixel**, e ventiquattro
 percorsi di prova escono identici, geometria compresa. I valori di riferimento
-li produce il Python con `python -m ombra.cli riferimenti`.
+li produce il Python con `python -m meriggio.cli riferimenti`.
 
 ---
 
@@ -181,23 +184,23 @@ python3 -m venv .venv
 
 # Scarica i dati, costruisce superficie e rete, ed esporta i file statici.
 # Circa 3 minuti per una città di 3,5 km di lato.
-.venv/bin/python -m ombra.cli prepara --luogo "Ascoli Piceno" --raggio 1.7
+.venv/bin/python -m meriggio.cli prepara --luogo "Ascoli Piceno" --raggio 1.7
 ```
 
 ### Preparare altre aree
 
 ```bash
 # Per nome (il centro abitato viene cercato su OpenStreetMap)
-python -m ombra.cli prepara --luogo "Bologna" --raggio 2.5
+python -m meriggio.cli prepara --luogo "Bologna" --raggio 2.5
 
 # Con centro esplicito, se la ricerca per nome non convince
-python -m ombra.cli prepara --luogo "Camerino" --centro 13.0674 43.1361 --raggio 1.2
+python -m meriggio.cli prepara --luogo "Camerino" --centro 13.0674 43.1361 --raggio 1.2
 
 # Riquadro esatto
-python -m ombra.cli prepara --bbox 11.32 44.48 11.36 44.51 --area bologna-centro
+python -m meriggio.cli prepara --bbox 11.32 44.48 11.36 44.51 --area bologna-centro
 
-python -m ombra.cli elenco                    # aree disponibili
-python -m ombra.cli esporta --area bologna    # riesporta senza riscaricare
+python -m meriggio.cli elenco                    # aree disponibili
+python -m meriggio.cli esporta --area bologna    # riesporta senza riscaricare
 ```
 
 L'esportazione scrive in `web/public/dati/`, che va commesso: sono quei file
@@ -231,7 +234,7 @@ che è l'originale e serve a preparare i dati e a produrre i riferimenti, e
 quella TypeScript, che è quella che gli utenti usano davvero.
 
 ```
-backend/ombra/          preparazione dei dati, gira sul portatile
+backend/meriggio/       preparazione dei dati, gira sul portatile
   sources.py            acquisizione delle cinque fonti
   surface.py            terreno, edifici e chiome su una griglia comune
   graph.py              rete percorribile da OpenStreetMap
@@ -241,7 +244,7 @@ backend/ombra/          preparazione dei dati, gira sul portatile
                         il motore originale, ora anche metro di paragone
   cli.py                pipeline a riga di comando
 
-web/src/ombra/          lo stesso motore, nel browser
+web/src/meriggio/       lo stesso motore, nel browser
   solar.ts              posizione del sole (NOAA) e carico radiativo
   shadow.ts             shadow casting; per punti singoli o su tutto il raster
   tiles.ts              lettura dei tasselli e ricomposizione del mosaico
@@ -255,13 +258,43 @@ web/src/ombra/          lo stesso motore, nel browser
   worker.ts             il calcolo, fuori dal filo dell'interfaccia
 
 web/src/
-  components/           mappa, pannello, linea del tempo, quadrante solare
+  components/           mappa, pannello, linea del tempo, quadrante solare,
+                        domanda sul consenso e informativa sulla privacy
   lib/motore.ts         quello che prima era il client dell'API
+  lib/consenso.ts       il consenso ai servizi esterni, valido sei mesi
   store.ts              stato dell'applicazione
 
 web/test/               confronto numerico fra le due implementazioni
 web/public/dati/        le città esportate: è questo che il browser scarica
 ```
+
+---
+
+## Privacy
+
+I punti scelti, i percorsi e la posizione del dispositivo **non lasciano mai il
+browser**, e l'app non imposta cookie. Per funzionare, però, Meriggio si collega a
+tre servizi di terzi, che ricevono l'indirizzo IP di chi li usa e che **non vengono
+contattati finché non c'è il consenso**:
+
+| Servizio | Per cosa | Cosa vede in più |
+|---|---|---|
+| **OpenFreeMap** | sfondo della mappa | la zona che si sta guardando |
+| **Open-Meteo** | meteo e vento | il centro dell'area (la città), non i punti scelti |
+| **Nominatim** (OpenStreetMap) | ricerca di indirizzi, facoltativa | il testo digitato nel campo di ricerca |
+
+Alla prima visita una finestra chiede il consenso: *Accetto tutto*, *Solo mappa e
+meteo* o *Non accetto*. La risposta si conserva nel `localStorage` per **sei
+mesi** (`meriggio.consenso`), poi viene richiesta di nuovo. Chi rifiuta la mappa
+non può proseguire, perché partenza e arrivo si scelgono lì: trova una schermata
+che lo spiega e permette di tornare sulla scelta. Chi rifiuta solo la ricerca
+usa tutto il resto, scegliendo i punti con un clic o con «La mia posizione».
+Il consenso si può cambiare in ogni momento da *Privacy e consenso*, in fondo al
+pannello, dove c'è anche l'informativa completa (`web/src/components/Informativa.tsx`).
+
+Il sito è ospitato da GitHub Pages, che tiene i normali log di accesso. Chi
+preferisce non usare nessun servizio esterno può eseguire Meriggio in locale con
+`npm run dev` dalla cartella `web/`.
 
 ---
 
@@ -297,3 +330,25 @@ web/public/dati/        le città esportate: è questo che il browser scarica
 TINITALY (INGV) CC BY 4.0 · Global Building Atlas (TUM) CC BY 4.0 · ETH Global
 Canopy Height CC BY 4.0 · Copernicus HRL, termini Copernicus · OpenStreetMap
 ODbL · mappa di base OpenFreeMap.
+
+---
+
+## Come citare
+
+Se usi Meriggio nel tuo lavoro, cita la versione archiviata. Il record Zenodo è
+la citazione di riferimento; [`CITATION.cff`](CITATION.cff) contiene gli stessi
+metadati e il pulsante *Cite this repository* di GitHub lo legge.
+
+> Marchesani, G. E., Cocci Grifoni, R., & Riera, D. (2026). *Meriggio*
+> [Software]. Zenodo. https://doi.org/10.5281/zenodo.23325436
+
+## Autori
+
+- Graziano Enzo Marchesani — Università di Camerino ([ORCID 0000-0002-4723-5099](https://orcid.org/0000-0002-4723-5099))
+- Roberta Cocci Grifoni — Università di Camerino ([ORCID 0000-0002-7092-6293](https://orcid.org/0000-0002-7092-6293))
+- Dajla Riera — Università di Camerino ([ORCID 0000-0003-4349-1471](https://orcid.org/0000-0003-4349-1471))
+
+## Licenza
+
+Il codice è rilasciato con licenza [GNU GPL v3 o successiva](LICENSE). I dati
+mantengono le licenze elencate sopra.

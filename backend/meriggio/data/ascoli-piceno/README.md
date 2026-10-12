@@ -54,7 +54,7 @@ vanno aggiunti a parte.
   coordinate precise delle sezioni (solo foto e planimetrie); le coordinate
   approssimate stanno invece in `pums_traffico_vie.csv` (vedi sotto), e
   l'aggancio ai tratti del grafo vero e proprio lo fa
-  `backend/ombra/traffico.py`.
+  `backend/meriggio/traffico.py`.
 - **Le 12 intersezioni e i dati pedoni/cicli**: vedi sopra, fuori scopo per
   ora.
 

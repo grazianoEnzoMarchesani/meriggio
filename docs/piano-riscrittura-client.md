@@ -194,7 +194,7 @@ l'usabilità reale. Richiede HTTPS (GitHub Pages lo dà gratis di default).
   dagli URL nel manifest — cambio trasparente per il frontend, che vede solo
   URL diversi.
 - Nessun server da amministrare, riavviare, monitorare. Preparare una città
-  nuova resta `ombra.cli prepara` + il nuovo comando di esportazione sul tuo
+  nuova resta `meriggio.cli prepara` + il nuovo comando di esportazione sul tuo
   Mac; il risultato è una cartella da committare/sincronizzare.
 
 ## Fasi di lavoro (ordine consigliato)
@@ -302,7 +302,7 @@ finché un pixel dello schermo vale più di 8 m di terreno. Sotto quella soglia 
 passa ai tasselli veri.
 
 **Parità numerica: verificata, non assunta.** `web/test/` confronta le due
-implementazioni sui valori che produce `python -m ombra.cli riferimenti`:
+implementazioni sui valori che produce `python -m meriggio.cli riferimenti`:
 
 | verifica | esito |
 |---|---|

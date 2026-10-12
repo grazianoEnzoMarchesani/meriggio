@@ -1,21 +1,35 @@
 import { useEffect } from 'react'
 import { Condizioni } from './components/Condizioni'
+import { Consenso } from './components/Consenso'
+import { Informativa } from './components/Informativa'
 import { MapView } from './components/MapView'
 import { MobileSheet } from './components/MobileSheet'
 import { MobileTop } from './components/MobileTop'
 import { Panel } from './components/Panel'
 import { SunDial } from './components/SunDial'
 import { Timeline } from './components/Timeline'
+import { useConsenso } from './lib/consenso'
 import { useIsMobile } from './lib/useIsMobile'
 import { useStore } from './store'
 
 export default function App() {
   const caricaAree = useStore((s) => s.caricaAree)
   const mobile = useIsMobile()
+  const { mappa } = useConsenso()
 
   useEffect(() => {
     void caricaAree()
   }, [caricaAree])
+
+  // Finche' non c'e' il consenso la mappa non si monta: nessuna richiesta a terzi
+  if (mappa !== 'si') {
+    return (
+      <>
+        <Consenso />
+        <Informativa />
+      </>
+    )
+  }
 
   if (mobile) {
     return (
@@ -28,6 +42,7 @@ export default function App() {
         <MobileSheet>
           <Panel />
         </MobileSheet>
+        <Informativa />
       </>
     )
   }
@@ -43,6 +58,7 @@ export default function App() {
         </div>
         <Timeline />
       </div>
+      <Informativa />
     </>
   )
 }

@@ -18,7 +18,7 @@
 import { writeFileSync } from 'node:fs'
 import { deflateSync } from 'node:zlib'
 
-import type { Ombre } from '../src/ombra/overlay.ts'
+import type { Ombre } from '../src/meriggio/overlay.ts'
 import { apriLocale } from './area.ts'
 
 const LATO = 900
