@@ -10,9 +10,12 @@ abstract: >-
 authors:
   - family-names: Marchesani
     given-names: Graziano Enzo
+    affiliation: "University of Camerino"
   - family-names: Cocci Grifoni
     given-names: Roberta
+    affiliation: "University of Camerino"
   - family-names: Riera
     given-names: Dajla
+    affiliation: "University of Camerino"
 repository-code: "https://github.com/grazianoEnzoMarchesani/meriggio"
 url: "https://grazianoenzomarchesani.github.io/meriggio/"
